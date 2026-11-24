@@ -4,6 +4,19 @@ A home lab for practicing IT work at a startup. The fictional company is **Tallo
 
 > This is lab work. Nothing here is a production environment.
 
+## Status
+
+**Phase 1 (Identity) is in progress.** Working so far:
+
+- **Okta** as the identity provider, with departments as groups and YubiKey MFA for admins
+- **SSO** to Salesforce (SAML) and a custom intranet app (OIDC) with group-based access and step-up MFA
+- **Joiner/mover/leaver automation** in Python, with dry runs, safety checks and an audit log
+
+Next: Google Workspace SSO and SCIM provisioning, Okta group rules, Terraform.
+Details in [phase1-identity/](phase1-identity/).
+
+## Phases
+
 | Phase | Focus | Status |
 |---|---|---|
 | [1. Identity](phase1-identity/) | Okta SSO (SAML + OIDC), SCIM provisioning, JML automation, Terraform | In progress |
