@@ -1,0 +1,29 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+crash.log
+.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Tool output that may hold real names/emails
+phase1-identity/jml-tool/audit/
+phase4-compliance/evidence/raw/
+
+# OS / editor
+.DS_Store
+.vscode/
