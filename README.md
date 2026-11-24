@@ -1,6 +1,6 @@
 # Startup IT Lab
 
-A home lab for practicing IT work at a startup. The fictional company is **Northwind**.
+A home lab for practicing IT work at a startup. The fictional company is **Tallow Peak** (`tallowpeak-lab.com`).
 
 > This is lab work. Nothing here is a production environment.
 

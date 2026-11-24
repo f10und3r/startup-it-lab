@@ -13,7 +13,7 @@ _TODO: architecture diagram and description._
 ### SSO
 - Google Workspace (SAML)
 - Salesforce Developer Edition (SAML)
-- Northwind intranet (OIDC)
+- Tallow Peak intranet (OIDC)
 
 ### Provisioning
 _TODO_
