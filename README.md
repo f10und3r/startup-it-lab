@@ -9,10 +9,11 @@ A home lab for practicing IT work at a startup. The fictional company is **Tallo
 **Phase 1 (Identity) is in progress.** Working so far:
 
 - **Okta** as the identity provider, with departments as groups and YubiKey MFA for admins
-- **SSO** to Salesforce (SAML) and a custom intranet app (OIDC) with group-based access and step-up MFA
+- **SSO** to Google Workspace and Salesforce (SAML) and a custom intranet app (OIDC) with group-based access and step-up MFA
+- **Provisioning:** Okta creates Google Workspace accounts by group
 - **Joiner/mover/leaver automation** in Python, with dry runs, safety checks and an audit log
 
-Next: Google Workspace SSO and SCIM provisioning, Okta group rules, Terraform.
+Next: finish Google Workspace testing, Okta group rules, Okta Workflows, Terraform.
 Details in [phase1-identity/](phase1-identity/).
 
 ## Phases

@@ -14,11 +14,13 @@ joiners, movers and leavers; access follows Okta groups.
 | **JML automation** | Python CLI: `join`, `move`, `leave` with dry runs, safety checks and a JSON-lines audit log | [jml-tool/](jml-tool/) |
 | **SAML SSO** | Salesforce Developer Edition signs in through Okta, users matched by Federation ID | [How it works](#saml-sso-to-salesforce) |
 | **OIDC SSO** | Tallow Peak intranet (Flask): authorization code + PKCE, group-based access (403), step-up MFA, friendly error pages | [intranet/](intranet/) |
+| **Google Workspace** | Domain verified and email moved to Gmail; SAML SSO through Okta; Okta creates Google accounts by group (Engineering so far) | [How it works](#google-workspace-sso-and-provisioning) |
 | **Signed commits** | Every commit is signed with an SSH key that lives on a YubiKey | Shows as Verified on GitHub |
 
 ## What's next
 
-- [ ] Google Workspace: SAML SSO + SCIM provisioning, so `leave` suspends the Workspace account
+- [x] Google Workspace: domain, email, SAML SSO, account creation from Okta
+- [ ] Google Workspace: reactivate the accounts Google auto-suspended, finish the Gmail sign-in test, test suspend on unassign
 - [ ] Group rules: All-Staff gets Google Workspace, Sales gets Salesforce
 - [ ] Okta Workflows: an offboarding checklist flow
 - [ ] Terraform: Okta groups and group rules as code ([terraform/](terraform/))
@@ -32,7 +34,7 @@ flowchart LR
     JML -- Okta API --> OKTA[(Okta<br/>users + groups)]
     OKTA -- SAML --> SF[Salesforce]
     OKTA -- OIDC --> INTRA[Tallow Peak intranet]
-    OKTA -. SAML + SCIM, next .-> GWS[Google Workspace]
+    OKTA -- SAML + provisioning --> GWS[Google Workspace]
     JML --> LOG[[Audit log]]
 ```
 
@@ -60,6 +62,30 @@ Federation ID matches the NameID.
 assertion's issuer and audience". Okta's preview suggested one Audience, but decoding the
 actual SAML response showed Okta sent the org's domain without `.develop` (Developer Edition
 orgs live under `.develop.my.salesforce.com`). Setting the Entity ID to exactly that value fixed it.
+
+### Google Workspace: SSO and provisioning
+
+Tallow Peak's Google Workspace runs on its own domain. Email moved from Cloudflare Email Routing
+to Gmail (MX `smtp.google.com` and a Google SPF record), and a Gmail routing rule sends mail for
+addresses without an account to the admin inbox.
+
+- **SSO:** Google's SAML SSO profile is assigned to the whole organization, so users who type
+  their address at Google are sent to Okta to sign in. Okta usernames equal Google emails, so
+  users match without an extra ID field. Super admins skip SSO and use a hardware key instead.
+- **Provisioning:** assigning an Okta group to the Google Workspace app creates the Google
+  accounts; unassigning or deactivating a user in Okta suspends the account. Assigning
+  Engineering created its four users.
+
+**Debugging notes:**
+
+- Sign-in first failed with Google's "This domain is not configured to use Single Sign On".
+  Google's newer SSO profiles each have their own ACS URL (`accounts.google.com/samlrp/<RPID>/acs`),
+  and Okta was sending to the older domain-wide address. Setting the **RPID** field in the Okta
+  app to the profile's ID fixed it.
+- After a successful Okta sign-in, Google asked the test user to verify with a phone number.
+  The new accounts were **"Automatically suspended" by Google's own protection** on the new
+  trial, not by Okta. Both systems' logs confirmed it: Okta had issued the sign-in, and Google
+  recorded the user's sign-in before the suspension blocked access. Reactivation is pending.
 
 ### OIDC SSO to the intranet
 
